@@ -1,7 +1,7 @@
 using System.Configuration;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Firefox;
 using System;
 using System.Text;
 
@@ -10,15 +10,19 @@ namespace SanWF.Test.UI
     [TestFixture]
     public abstract class SeleniumBaseTestFixture
     {
-        protected IWebDriver driver;
         private StringBuilder verificationErrors;
         private bool acceptNextAlert = true;
+        protected IWebDriver driver;
+        protected string baseURL;
 
         [TestFixtureSetUp]
         public void SetupTest()
         {
-            driver = new InternetExplorerDriver();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
+            SetConfigFileAtRuntime(@"C:\SanWF.Test.UI.config");
+            this.baseURL = ConfigurationManager.AppSettings["baseURL"];
+
+            driver = new FirefoxDriver();
+            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
             verificationErrors = new StringBuilder();
         }
 
@@ -83,7 +87,7 @@ namespace SanWF.Test.UI
             }
         }
 
-        private string CloseAlertAndGetItsText()
+        protected string CloseAlertAndGetItsText()
         {
             try
             {
@@ -105,6 +109,16 @@ namespace SanWF.Test.UI
         }
 
         protected bool IsTextPresent(string text)
+        {
+            return this.IsTextPresent(this.driver, text);
+        }
+
+        protected bool IsTextNotPresent(IWebDriver driver, string text)
+        {
+            return !this.IsTextPresent(driver, text);
+        }
+
+        protected bool IsTextPresent(IWebDriver driver, string text)
         {
             try
             {
