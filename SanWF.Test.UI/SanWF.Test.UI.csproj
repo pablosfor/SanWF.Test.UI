@@ -56,7 +56,6 @@
     <Compile Include="FeasibilityAnalysisTitleInfoPage.cs" />
     <Compile Include="FeasibilityAnalysisOrderTestFixture.cs" />
     <Compile Include="LoginPage.cs" />
-    <Compile Include="SeleniumTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SeleniumBaseTestFixture.cs" />
   </ItemGroup>

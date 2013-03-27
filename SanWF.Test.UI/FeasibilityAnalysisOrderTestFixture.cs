@@ -1,38 +1,32 @@
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
-using System;
 
 namespace SanWF.Test.UI
 {
     [TestFixture]
     public class FeasibilityAnalysisOrderTestFixture : SeleniumBaseTestFixture
     {
-        [TestFixtureSetUp]
-        public void FeasibilityAnalysisOrderTestFixtureSetupTest()
-        {
-            var page = new LoginPage(this.driver, this.baseURL);
-            page.Navigate();
-            page.LoginWith("vnoetinger");
-        }
-
         [Test]
         public void FeasibilityAnalysisOrderTest()
         {
-            var page = new FeasibilityAnalysisPage(driver, this.baseURL);
+            var loginPage = new LoginPage(this.driver, this.baseURL);
+            loginPage.Navigate();
+            loginPage.LoginWith(this.feasibilityAnalysisOrderCreator);
 
-            page.Navigate();
+            var feasibilityAnalysisPage = new FeasibilityAnalysisPage(driver, this.baseURL);
 
-            page.AgregarTitulo().
-                WithTitulo("Prueba").
+            feasibilityAnalysisPage.Navigate();
+
+            feasibilityAnalysisPage.AgregarTitulo().
+                WithTitle("Título de prueba").
+                WithNewAuthor("Nuevo autor de prueba").
+                WithMonthYear("marzo de 2013").
+                WithSeal("AGUILAR").
+                WithCollection("Nueva colección de prueba").
                 Add();
 
-            page.Aceptar();
+            feasibilityAnalysisPage.Aceptar();
 
-            string expectedAlertText = "procedimiento";
-
-            WebDriverWait wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(10));
-            wait.Until(d => d.FindElement(By.XPath("//*[contains(.,'" + expectedAlertText + "')]")));
+            Assert.IsTrue(this.IsTextPresentWithWait(driver, "Debe ingresar el Formato"));
         }
     }
 }

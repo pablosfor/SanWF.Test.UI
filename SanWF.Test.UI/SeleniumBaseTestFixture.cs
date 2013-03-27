@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using System;
 using System.Text;
+using OpenQA.Selenium.Support.UI;
 
 namespace SanWF.Test.UI
 {
@@ -14,12 +15,14 @@ namespace SanWF.Test.UI
         private bool acceptNextAlert = true;
         protected IWebDriver driver;
         protected string baseURL;
+        protected string feasibilityAnalysisOrderCreator;
 
         [TestFixtureSetUp]
         public void SetupTest()
         {
             SetConfigFileAtRuntime(@"C:\SanWF.Test.UI.config");
             this.baseURL = ConfigurationManager.AppSettings["baseURL"];
+            this.feasibilityAnalysisOrderCreator = ConfigurationManager.AppSettings["feasibilityAnalysisOrderCreator"];
 
             driver = new FirefoxDriver();
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(5));
@@ -127,6 +130,21 @@ namespace SanWF.Test.UI
                 return true;
             }
             catch (OpenQA.Selenium.NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        protected bool IsTextPresentWithWait(IWebDriver driver, string text)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(10));
+                wait.Until(d => d.FindElement(By.XPath("//*[contains(.,'" + text + "')]")));
+
+                return true;
+            }
+            catch (OpenQA.Selenium.WebDriverTimeoutException)
             {
                 return false;
             }
